@@ -21,7 +21,6 @@ export default function CandidatesPage() {
                     pageIndex,
                     pageSize
                 };
-                console.log({params})
                 if (department) {
                     params.department = department;
                 }
