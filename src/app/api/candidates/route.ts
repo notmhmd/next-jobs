@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { URLSearchParams } from "url";
+import {cookies} from "next/headers";
 
 export async function GET(req: Request) {
     const url = new URL(req.url);
@@ -44,6 +43,37 @@ export async function GET(req: Request) {
         console.log({ error });
         return NextResponse.json(
             { message: "An error occurred while fetching candidates" },
+            { status: 500 }
+        );
+    }
+}
+
+export async function POST(req: Request) {
+    const formData = await req.formData();
+
+
+    try {
+        const response = await fetch(`${process.env.DJANGO_API_URL}/api/candidates/register/`, {
+            method: "POST",
+            headers: {},
+            body: formData,
+        });
+
+        if (!response.ok) {
+            return NextResponse.json(
+                { message: "Failed to register candidate" },
+                { status: 500 }
+            );
+        }
+        const candidate = await response.json();
+        return NextResponse.json(
+            { data: candidate },
+            { status: 201 }
+        );
+    } catch (error) {
+        console.error("Registration error:", error);
+        return NextResponse.json(
+            { message: "An error occurred during registration" },
             { status: 500 }
         );
     }

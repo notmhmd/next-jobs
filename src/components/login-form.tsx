@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import {Loader2} from "lucide-react";
+import {useRouter} from "next/navigation";
+
 
 const loginFormSchema = yup.object({
   username: yup.string().required(),
@@ -36,6 +38,12 @@ export function LoginForm({className, loading, onSubmit, ...props}: LoginFormPro
   } = useForm({
     resolver: yupResolver(loginFormSchema),
   })
+  const router = useRouter()
+
+
+  const handleSignUpRedirect = () => {
+    router.push("/register")
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -43,7 +51,7 @@ export function LoginForm({className, loading, onSubmit, ...props}: LoginFormPro
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your username below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -82,15 +90,12 @@ export function LoginForm({className, loading, onSubmit, ...props}: LoginFormPro
                   Login
                   { loading ? <Loader2 className="animate-spin" /> : undefined }
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
-                </Button>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
-                Sign up
+              Don&apos;t You are A Candidate?{" "}
+              <a href="#" onClick={handleSignUpRedirect} className="underline underline-offset-4">
+                Register now
               </a>
             </div>
           </form>

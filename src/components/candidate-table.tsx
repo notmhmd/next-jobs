@@ -141,30 +141,6 @@ export const columns: ColumnDef<Candidate>[] = [
     {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
-            const candidate = row.original
-
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(candidate.id)}
-                        >
-                            Copy Candidate ID
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Download Resume</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
-        },
     },
 ]
 
@@ -173,12 +149,13 @@ export type CandidateTableProps = {
     pageIndex: number;
     pageSize: number;
     totalCount: number;
+    handleDownloadResume: (candidateId: string, candidateName:string) => void;
     setPageIndex: React.Dispatch<React.SetStateAction<number>>;
     setPageSize: React.Dispatch<React.SetStateAction<number>>;
     setDepartment: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export function CandidateTable({candidates, setPageIndex, pageIndex, totalCount, setDepartment}: CandidateTableProps)  {
+export function CandidateTable({candidates, setPageIndex, pageIndex, totalCount, setDepartment, handleDownloadResume}: CandidateTableProps)  {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -186,9 +163,43 @@ export function CandidateTable({candidates, setPageIndex, pageIndex, totalCount,
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
+
+    const columnsWithHandler = React.useMemo(
+        () => columns.map(col =>
+            col.id === "actions"
+                ? { ...col, cell: ({ row }) => {
+                        const candidate = row.original;
+                        return (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="h-8 w-8 p-0">
+                                        <span className="sr-only">Open menu</span>
+                                        <MoreHorizontal />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                    <DropdownMenuItem
+                                        onClick={() => navigator.clipboard.writeText(candidate.id)}
+                                    >
+                                        Copy Candidate ID
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={() => handleDownloadResume(candidate.id, candidate.full_name)}>
+                                        Download Resume
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        );
+                    }
+                }
+                : col
+        ),
+        [handleDownloadResume]
+    );
     const table = useReactTable({
         data: candidates,
-        columns,
+        columns: columnsWithHandler,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -205,7 +216,6 @@ export function CandidateTable({candidates, setPageIndex, pageIndex, totalCount,
             rowSelection,
         },
     })
-    console.log(table.getRowModel().rows, "rows")
     return (
         <div className="w-full">
             <div className="flex items-center py-4">
