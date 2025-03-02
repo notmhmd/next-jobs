@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export async function apiRequest<T>(
     endpoint: string,
     method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
-    body?: { [key: string]: any | FormData  },
+    body?: Record<string, unknown> | FormData,
     params?: Record<string, string | number | boolean>
 ): Promise<T> {
   const url = new URL(`/api/${endpoint}`, window.location.origin);

@@ -1,15 +1,29 @@
 "use client"
 
-import {useEffect} from "react";
+import { Suspense, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import confetti from "canvas-confetti";
-import {useRouter, useSearchParams} from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import {Loader2} from "lucide-react";
+import * as React from "react";
 
 export default function Page() {
+    return (
+        <Suspense fallback={
+            <div className="h-[100vh] flex flex-col items-center justify-center">
+                <Loader2 className="animate-spin text-blue-500 mb-4" size={40}/>
+                <p className="text-lg text-gray-600">Loading, please wait...</p>
+            </div>
+        }>
+            <PageContent/>
+        </Suspense>
+    );
+}
+
+function PageContent() {
     const params = useSearchParams();
     const candidateName = params.get("name");
     const router = useRouter();
-
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -30,9 +44,9 @@ export default function Page() {
         return () => clearInterval(interval);
     }, []);
 
-    const handleHomeClick = ()=> {
+    const handleHomeClick = () => {
         router.push("/");
-    }
+    };
 
     return (
         <div className="welcome-container flex items-center justify-center min-h-screen bg-gray-100">

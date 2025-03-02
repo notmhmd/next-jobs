@@ -12,6 +12,7 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
+    CoreRow,
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 
@@ -167,7 +168,7 @@ export function CandidateTable({candidates, setPageIndex, pageIndex, totalCount,
     const columnsWithHandler = React.useMemo(
         () => columns.map(col =>
             col.id === "actions"
-                ? { ...col, cell: ({ row }) => {
+                ? { ...col, cell: ({ row }: {row: CoreRow<Candidate>}) => {
                         const candidate = row.original;
                         return (
                             <DropdownMenu>

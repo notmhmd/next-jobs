@@ -1,8 +1,7 @@
 import {  NextResponse } from "next/server";
 import {cookies} from "next/headers";
 
-export async function GET(req: Request, { params }: { params: { id: string } }
-) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
         const cookieStore = await cookies();
