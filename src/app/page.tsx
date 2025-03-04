@@ -1,11 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import {useRouter} from "next/navigation";
+import {motion} from "framer-motion";
+import {Button} from "@/components/ui/button";
 
-export default function Home() {
-  const router = useRouter();
+export default function Page() {
+    const router = useRouter();
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4 sm:p-6">
